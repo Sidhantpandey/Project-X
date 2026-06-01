@@ -1,79 +1,120 @@
-import React from "react";
-import { Link, NavLink } from "react-router-dom";
-import Darktoggle from "../Darktoggle/Darktoggle.jsx";
+import React, { useState } from "react";
+import { Menu, X } from "lucide-react";
 
-export default function Header() {
+const Header = () => {
+  const [expanded, setExpanded] = useState(false);
+
   return (
-    <header className="shadow sticky z-50 top-0">
-      <nav className="bg-white border-gray-200 px-4 lg:px-6 py-2.5">
-        <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-          <Link to="/" className="flex items-center">
-            <img
-              src="https://imgs.search.brave.com/87nx7uhr47EOQwgZ1i42ObrbCjsqUaUp-O0UE4E0vRg/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly90NC5m/dGNkbi5uZXQvanBn/LzAwLzk2LzgwLzQ5/LzM2MF9GXzk2ODA0/OTk1X1VrZWMweGJy/cmp3OHNIcVAwVkVj/b1pIVjNMaGtqb0wz/LmpwZw"
-              className="mr-3 h-14"
-              alt="Logo"
-            />
-          </Link>
-          <div className="flex items-center lg:order-2">
-            <Darktoggle />
-            <Link
-              to="#"
-              className="text-gray-800 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
-            >
-              Log in
-            </Link>
-            <Link
-              to="#"
-              className="text-white bg-blue-950 hover:bg-orange-600 focus:ring-4 focus:ring-orange-300 font-medium rounded-lg text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 focus:outline-none"
-            >
-              Get started
-            </Link>
+    <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
+      <div className="max-w-7xl mx-auto px-6 lg:px-8">
+        <div className="h-20 flex items-center justify-between">
+          {/* Logo */}
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">
+              L
+            </div>
+
+            <div>
+              <h2 className="font-bold text-xl text-gray-900">
+                LogInsight
+              </h2>
+
+              <p className="text-xs text-gray-500">
+                AI Powered Log Analytics
+              </p>
+            </div>
           </div>
-          <div
-            className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1"
-            id="mobile-menu-2"
+
+          {/* Desktop Nav */}
+          <nav className="hidden lg:flex items-center gap-10">
+            <a
+              href="#features"
+              className="text-gray-600 hover:text-gray-900 transition"
+            >
+              Features
+            </a>
+
+            <a
+              href="#workflow"
+              className="text-gray-600 hover:text-gray-900 transition"
+            >
+              Workflow
+            </a>
+
+            <a
+              href="#analytics"
+              className="text-gray-600 hover:text-gray-900 transition"
+            >
+              Analytics
+            </a>
+
+            <a
+              href="#pricing"
+              className="text-gray-600 hover:text-gray-900 transition"
+            >
+              Pricing
+            </a>
+          </nav>
+
+          {/* Desktop Actions */}
+          <div className="hidden lg:flex items-center gap-4">
+            <button className="px-5 py-2.5 text-gray-700 hover:text-gray-900">
+              Login
+            </button>
+
+            <button className="px-5 py-2.5 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition">
+              Get Started
+            </button>
+          </div>
+
+          {/* Mobile Toggle */}
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="lg:hidden"
           >
-            <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-8 lg:mt-0">
-              <li>
-                <NavLink
-                  to="/"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-orange-400" : "text-gray-700"
-                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-900 lg:p-0`
-                  }
-                >
-                  Home
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/about"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-orange-400" : "text-gray-700"
-                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-900 lg:p-0`
-                  }
-                >
-                  About
-                </NavLink>
-              </li>
-              <li>
-                <NavLink
-                  to="/contact"
-                  className={({ isActive }) =>
-                    `block py-2 pr-4 pl-3 duration-200 ${
-                      isActive ? "text-orange-400" : "text-gray-700"
-                    } border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 hover:text-blue-900 lg:p-0`
-                  }
-                >
-                  Contact
-                </NavLink>
-              </li>
-            </ul>
-          </div>
+            {expanded ? (
+              <X size={28} />
+            ) : (
+              <Menu size={28} />
+            )}
+          </button>
         </div>
-      </nav>
+
+        {/* Mobile Menu */}
+        {expanded && (
+          <div className="lg:hidden border-t border-gray-100 py-6">
+            <div className="flex flex-col gap-5">
+              <a href="#features" className="text-gray-700">
+                Features
+              </a>
+
+              <a href="#workflow" className="text-gray-700">
+                Workflow
+              </a>
+
+              <a href="#analytics" className="text-gray-700">
+                Analytics
+              </a>
+
+              <a href="#pricing" className="text-gray-700">
+                Pricing
+              </a>
+
+              <hr />
+
+              <button className="text-left text-gray-700">
+                Login
+              </button>
+
+              <button className="bg-gray-900 text-white py-3 rounded-xl">
+                Get Started
+              </button>
+            </div>
+          </div>
+        )}
+      </div>
     </header>
   );
-}
+};
+
+export default Header;

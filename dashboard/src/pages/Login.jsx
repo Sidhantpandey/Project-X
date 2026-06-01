@@ -1,94 +1,143 @@
-import React, { useState, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "../config/axios.js";
-import { toast } from "react-toastify";
+import React from "react";
+import { Link } from "react-router-dom";
+import { Mail, Lock } from "lucide-react";
 
-const LoginForm = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const navigate = useNavigate();
-
-  async function submitHandler(e) {
-    e.preventDefault();
-    try {
-      const res = await axios.post("/users/login", {
-        email,
-        password,
-      });
-
-      if (res.data.token) {
-        // First set the token
-        localStorage.setItem("token", res.data.token);
-
-        // Update axios default headers
-        axios.defaults.headers.common[
-          "Authorization"
-        ] = `Bearer ${res.data.token}`;
-
-        // Then set user data
-        localStorage.setItem("user", JSON.stringify(res.data.user));
-        setUser(res.data.user);
-
-        toast.success("Login Successful!", { position: "top-right" });
-        navigate("/");
-      } else {
-        throw new Error("No token received");
-      }
-    } catch (err) {
-      console.error("Login error:", err);
-      toast.error(err.response?.data?.message || "Login Failed!", {
-        position: "top-right",
-      });
-    }
-  }
-
+const Login = () => {
   return (
-    <div className="flex min-h-screen items-center bg-gradient-to-r from-blue-100 to-blue-300 justify-center animate-fade-in-down bg-gray-50">
-      <div className="flex w-4/5 max-w-4xl bg-white rounded-xl shadow-2xl overflow-hidden transform transition duration-500 hover:scale-105">
-        {/* Left Section - Form */}
-        <div className="w-1/2 p-10 flex flex-col justify-center">
-          <h2 className="text-black text-2xl font-semibold mb-6 text-center">Login</h2>
-          <form onSubmit={submitHandler}>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2 font-medium" htmlFor="email">Email</label>
-              <input
-                onChange={(e) => setEmail(e.target.value)}
-                type="email"
-                id="email"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your email"
-                required
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 mb-2 font-medium" htmlFor="password">Password</label>
-              <input
-                onChange={(e) => setPassword(e.target.value)}
-                type="password"
-                id="password"
-                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Enter your password"
-                required
-              />
-            </div>
-            <button type="submit" className="w-full bg-blue-600 text-white p-3 rounded-lg font-semibold hover:bg-blue-500 transition duration-300 shadow-md hover:shadow-xl">
-              Login
-            </button>
-          </form>
-          <p className="text-gray-700 text-center mt-6">
-            Don't have an account? <Link to="/register" className="text-blue-600 hover:underline font-medium">Create one</Link>
+    <div className="min-h-screen bg-white flex items-center justify-center px-6">
+      <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-16 items-center">
+
+        {/* Left Side */}
+        <div className="hidden lg:block">
+          <div className="inline-flex px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-8">
+            <span className="text-blue-600 text-sm font-medium">
+              AI Powered Log Analytics
+            </span>
+          </div>
+
+          <h1 className="text-6xl font-bold leading-tight text-gray-900">
+            Understand
+            <br />
+            Your Logs
+            <br />
+            Instantly.
+          </h1>
+
+          <p className="mt-8 text-lg text-gray-600 max-w-xl">
+            Feed millions of logs into LogInsight and get
+            AI-generated root cause analysis, anomaly detection,
+            semantic search, and incident summaries.
           </p>
-          <p className="text-gray-700 text-center mt-6">
-            <Link to="/reset-password" className="text-blue-600 hover:underline font-medium">Forgot Password?</Link>
-          </p>
+
+          {/* Workflow */}
+          <div className="mt-12 flex items-center gap-4 flex-wrap">
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
+              Logs
+            </div>
+
+            <span>→</span>
+
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
+              RAG
+            </div>
+
+            <span>→</span>
+
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
+              GPT
+            </div>
+
+            <span>→</span>
+
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
+              Insights
+            </div>
+          </div>
         </div>
 
-        {/* Right Section - Image/Animation */}
-        <div className="w-1/2 flex items-center justify-center bg-gradient-to-r from-blue-400 to-blue-600">
+        {/* Right Side */}
+        <div className="relative">
+          {/* Glow */}
+          <div className="absolute -top-10 -left-10 h-72 w-72 bg-blue-500/20 rounded-full blur-3xl" />
+
+          <div className="relative bg-white border border-gray-200 rounded-3xl shadow-xl p-10">
+            <h2 className="text-3xl font-bold text-gray-900">
+              Welcome Back
+            </h2>
+
+            <p className="text-gray-500 mt-2">
+              Sign in to access your dashboards.
+            </p>
+
+            <form className="mt-8 space-y-5">
+              <div>
+                <label className="text-sm font-medium text-gray-700">
+                  Email
+                </label>
+
+                <div className="mt-2 relative">
+                  <Mail
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type="email"
+                    placeholder="you@example.com"
+                    className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700">
+                  Password
+                </label>
+
+                <div className="mt-2 relative">
+                  <Lock
+                    size={18}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+
+                  <input
+                    type="password"
+                    placeholder="••••••••"
+                    className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <button
+                className="
+                w-full
+                py-3
+                rounded-xl
+                bg-gray-900
+                text-white
+                font-semibold
+                hover:bg-black
+                transition
+              "
+              >
+                Sign In
+              </button>
+            </form>
+
+            <p className="mt-6 text-center text-gray-500">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="text-blue-600 font-medium"
+              >
+                Create Account
+              </Link>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default LoginForm;
+export default Login;

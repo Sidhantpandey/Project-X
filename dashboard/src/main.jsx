@@ -13,7 +13,6 @@ import {
   Route,
   createRoutesFromElements,
 } from "react-router-dom";
-import { ThemeProvider } from "./context/ThemeContext"; // Import ThemeProvider
 import Login from "./pages/Login.jsx";
 import Register from "./pages/Register.jsx";
 
@@ -32,10 +31,8 @@ const router = createBrowserRouter(
 
 createRoot(document.getElementById("root")).render(
   
-    <ThemeProvider>
       <div className="bg-gray-100 text-gray-900 dark:bg-gray-900 dark:text-white min-h-screen">
         <RouterProvider router={router} />
       </div>
-    </ThemeProvider>
   
 );
