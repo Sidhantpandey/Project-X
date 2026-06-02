@@ -11,14 +11,14 @@ const Home = () => {
         <div className="px-4 mx-auto max-w-7xl sm:px-6 lg:px-8">
           <div className="max-w-2xl mx-auto text-center">
             <h1 className="px-6 text-lg text-gray-600">
-              Smart email campaign builder, made for Developers
+              Smart RAG based system for analysis of log data from servers.
             </h1>
 
             <p className="mt-5 text-4xl font-bold leading-tight text-gray-900 sm:text-5xl lg:text-6xl">
-              Turn your visitors into profitable{" "}
+              Try the LogInsights and kill{" "}
               <span className="relative inline-flex sm:inline">
                 <span className="absolute inset-0 w-full h-full opacity-30 blur-lg bg-gradient-to-r from-[#44BCFF] via-[#FF44EC] to-[#FF675E]" />
-                <span className="relative">business</span>
+                <span className="relative">hurdles</span>
               </span>
             </p>
 

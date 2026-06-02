@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import { Menu, X } from "lucide-react";
+import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext.jsx";
 
 const Header = () => {
   const [expanded, setExpanded] = useState(false);
+  const auth = useAuth();
 
   return (
     <header className="sticky top-0 z-50 bg-white/80 backdrop-blur-md border-b border-gray-100">
@@ -10,14 +13,16 @@ const Header = () => {
         <div className="h-20 flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">
-              L
-            </div>
+            <Link to="/">
+              <div className="h-10 w-10 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-500 flex items-center justify-center text-white font-bold">
+                L
+              </div>
+            </Link>
 
             <div>
-              <h2 className="font-bold text-xl text-gray-900">
+              <Link to="/" className="text-lg font-semibold text-gray-900">
                 LogInsight
-              </h2>
+              </Link>
 
               <p className="text-xs text-gray-500">
                 AI Powered Log Analytics
@@ -58,13 +63,13 @@ const Header = () => {
 
           {/* Desktop Actions */}
           <div className="hidden lg:flex items-center gap-4">
-            <button className="px-5 py-2.5 text-gray-700 hover:text-gray-900">
+            <Link to="/login" className="px-5 py-2.5 rounded-xl text-gray-700 hover:bg-gray-100 transition">
               Login
-            </button>
+            </Link>
 
-            <button className="px-5 py-2.5 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition">
+            <Link to="/register" className="px-5 py-2.5 rounded-xl bg-gray-900 text-white hover:bg-gray-800 transition">
               Get Started
-            </button>
+            </Link>
           </div>
 
           {/* Mobile Toggle */}
@@ -102,13 +107,13 @@ const Header = () => {
 
               <hr />
 
-              <button className="text-left text-gray-700">
+              <Link to="/login" className="text-left text-gray-700">
                 Login
-              </button>
+              </Link>
 
-              <button className="bg-gray-900 text-white py-3 rounded-xl">
+              <Link to="/register" className="bg-gray-900 text-white py-3 rounded-xl text-center">
                 Get Started
-              </button>
+              </Link>
             </div>
           </div>
         )}

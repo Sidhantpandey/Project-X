@@ -1,9 +1,9 @@
 import express from 'express';
 import logger from './app/utils/logger.js';
 import corsMiddleware from './app/config/cors.js';
-import requestLogger from './app/middleware/requestLogger.js';
+import requestLogger from './app/middleware/requestLoggerMiddleware.js';
 import routes from './app/routes/index.js';
-import { notFoundHandler, errorHandler } from './app/middleware/errorHandler.js';
+import { notFoundHandler, errorHandler } from './app/middleware/errorHandlerMiddleware.js';
 import morgan from 'morgan';
 
 const app = express();

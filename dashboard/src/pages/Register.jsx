@@ -1,87 +1,81 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { Mail, Lock } from "lucide-react";
+import { useAuth } from "../context/AuthContext.jsx";
 
-const Login = () => {
+const Register = () => {
+  const auth = useAuth();
+  const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    auth.login();
+    navigate("/", { replace: true });
+  };
+
   return (
     <div className="min-h-screen bg-white flex items-center justify-center px-6">
       <div className="max-w-7xl w-full grid lg:grid-cols-2 gap-16 items-center">
-
-        {/* Left Side */}
         <div className="hidden lg:block">
           <div className="inline-flex px-4 py-2 rounded-full bg-blue-50 border border-blue-100 mb-8">
-            <span className="text-blue-600 text-sm font-medium">
-              AI Powered Log Analytics
-            </span>
+            <span className="text-blue-600 text-sm font-medium">AI Powered Log Analytics</span>
           </div>
 
           <h1 className="text-6xl font-bold leading-tight text-gray-900">
-            Understand
+            Start analyzing
             <br />
-            Your Logs
+            your server logs
             <br />
-            Instantly.
+            with RAG intelligence.
           </h1>
 
           <p className="mt-8 text-lg text-gray-600 max-w-xl">
-            Feed millions of logs into LogInsight and get
-            AI-generated root cause analysis, anomaly detection,
-            semantic search, and incident summaries.
+            Create an account to transform raw server logs into AI-generated incident reports, anomaly investigations, and knowledge-backed log search.
           </p>
 
-          {/* Workflow */}
           <div className="mt-12 flex items-center gap-4 flex-wrap">
-            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
-              Logs
-            </div>
-
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">Logs</div>
             <span>→</span>
-
-            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
-              RAG
-            </div>
-
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">RAG</div>
             <span>→</span>
-
-            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
-              GPT
-            </div>
-
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">GPT</div>
             <span>→</span>
-
-            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">
-              Insights
-            </div>
+            <div className="px-5 py-3 rounded-xl border bg-white shadow-sm">Insights</div>
           </div>
         </div>
 
-        {/* Right Side */}
         <div className="relative">
-          {/* Glow */}
           <div className="absolute -top-10 -left-10 h-72 w-72 bg-blue-500/20 rounded-full blur-3xl" />
 
           <div className="relative bg-white border border-gray-200 rounded-3xl shadow-xl p-10">
-            <h2 className="text-3xl font-bold text-gray-900">
-              Welcome Back
-            </h2>
+            <h2 className="text-3xl font-bold text-gray-900">Create your LogInsight account</h2>
+            <p className="text-gray-500 mt-2">Join to unlock AI-based log analytics, RAG-powered context, and server incident intelligence instantly.</p>
 
-            <p className="text-gray-500 mt-2">
-              Sign in to access your dashboards.
-            </p>
-
-            <form className="mt-8 space-y-5">
+            <form onSubmit={handleSubmit} className="mt-8 space-y-5">
               <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Email
-                </label>
-
+                <label className="text-sm font-medium text-gray-700">Name</label>
                 <div className="mt-2 relative">
-                  <Mail
-                    size={18}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-
                   <input
+                    value={name}
+                    onChange={(event) => setName(event.target.value)}
+                    type="text"
+                    placeholder="Your full name"
+                    className="w-full pl-4 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  />
+                </div>
+              </div>
+
+              <div>
+                <label className="text-sm font-medium text-gray-700">Email</label>
+                <div className="mt-2 relative">
+                  <Mail size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    value={email}
+                    onChange={(event) => setEmail(event.target.value)}
                     type="email"
                     placeholder="you@example.com"
                     className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -90,17 +84,12 @@ const Login = () => {
               </div>
 
               <div>
-                <label className="text-sm font-medium text-gray-700">
-                  Password
-                </label>
-
+                <label className="text-sm font-medium text-gray-700">Password</label>
                 <div className="mt-2 relative">
-                  <Lock
-                    size={18}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-
+                  <Lock size={18} className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                   <input
+                    value={password}
+                    onChange={(event) => setPassword(event.target.value)}
                     type="password"
                     placeholder="••••••••"
                     className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -108,30 +97,13 @@ const Login = () => {
                 </div>
               </div>
 
-              <button
-                className="
-                w-full
-                py-3
-                rounded-xl
-                bg-gray-900
-                text-white
-                font-semibold
-                hover:bg-black
-                transition
-              "
-              >
-                Sign In
+              <button type="submit" className="w-full py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-black transition">
+                Create Account
               </button>
             </form>
 
             <p className="mt-6 text-center text-gray-500">
-              Don't have an account?{" "}
-              <Link
-                to="/signup"
-                className="text-blue-600 font-medium"
-              >
-                Create Account
-              </Link>
+              Already have an account? <Link to="/login" className="text-blue-600 font-medium">Sign In</Link>
             </p>
           </div>
         </div>
@@ -140,4 +112,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
