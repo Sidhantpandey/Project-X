@@ -8,6 +8,7 @@ class LogRequest(BaseModel):
 
 class QueryRequest(BaseModel):
     query: str
+    service: str | None = None
 
 
 class AgenticQueryResponse(BaseModel):

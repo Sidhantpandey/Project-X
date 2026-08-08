@@ -17,6 +17,11 @@ class Settings(BaseSettings):
     embedding_model: str = "all-MiniLM-L6-v2"
     query_n_results: int = 5
 
+    # Kafka / ingest queue settings
+    kafka_bootstrap_servers: str = "localhost:9092"
+    kafka_topic_raw: str = "raw-logs"
+    use_kafka: bool = False
+
     gemini_api_key: str = ""
     gemini_model: str = "gemini-2.5-flash"
     gemini_base_url: str = "https://generativelanguage.googleapis.com/v1beta"

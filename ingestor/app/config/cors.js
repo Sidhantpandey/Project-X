@@ -1,10 +1,18 @@
 import cors from 'cors';
 
+const parseOrigins = () => {
+  const raw = process.env.CORS_ORIGIN;
+  if (!raw) {
+    return ['http://localhost:5173', 'http://localhost:3000'];
+  }
+  return raw.split(',').map((origin) => origin.trim());
+};
+
 const corsOptions = {
-  origin: process.env.CORS_ORIGIN || ['http://localhost:5173', 'http://localhost:3000'],
+  origin: parseOrigins(),
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'x-api-key'],
 };
 
 export const corsMiddleware = cors(corsOptions);

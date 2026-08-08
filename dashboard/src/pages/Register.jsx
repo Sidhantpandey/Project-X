@@ -10,11 +10,22 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    auth.login();
-    navigate("/", { replace: true });
+    setError("");
+    setSubmitting(true);
+
+    try {
+      await auth.register(name, email, password);
+      navigate("/dashboard", { replace: true });
+    } catch (err) {
+      setError(err?.response?.data?.message || "Registration failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -56,6 +67,12 @@ const Register = () => {
             <p className="text-gray-500 mt-2">Join to unlock AI-based log analytics, RAG-powered context, and server incident intelligence instantly.</p>
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              {error && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
+
               <div>
                 <label className="text-sm font-medium text-gray-700">Name</label>
                 <div className="mt-2 relative">
@@ -63,6 +80,7 @@ const Register = () => {
                     value={name}
                     onChange={(event) => setName(event.target.value)}
                     type="text"
+                    required
                     placeholder="Your full name"
                     className="w-full pl-4 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -77,6 +95,7 @@ const Register = () => {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     type="email"
+                    required
                     placeholder="you@example.com"
                     className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -91,14 +110,20 @@ const Register = () => {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     type="password"
+                    required
+                    minLength={6}
                     placeholder="••••••••"
                     className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              <button type="submit" className="w-full py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-black transition">
-                Create Account
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-black transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitting ? "Creating account..." : "Create Account"}
               </button>
             </form>
 

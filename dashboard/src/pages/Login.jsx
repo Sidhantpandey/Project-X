@@ -7,15 +7,26 @@ const Login = () => {
   const auth = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/dashboard";
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    auth.login();
-    navigate(from, { replace: true });
+    setError("");
+    setSubmitting(true);
+
+    try {
+      await auth.login(email, password);
+      navigate(from, { replace: true });
+    } catch (err) {
+      setError(err?.response?.data?.message || "Login failed. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -57,6 +68,12 @@ const Login = () => {
             <p className="text-gray-500 mt-2">Access AI-assisted log queries, server health insights, and the RAG knowledge layer for your platform.</p>
 
             <form onSubmit={handleSubmit} className="mt-8 space-y-5">
+              {error && (
+                <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                  {error}
+                </div>
+              )}
+
               <div>
                 <label className="text-sm font-medium text-gray-700">Email</label>
                 <div className="mt-2 relative">
@@ -65,6 +82,7 @@ const Login = () => {
                     value={email}
                     onChange={(event) => setEmail(event.target.value)}
                     type="email"
+                    required
                     placeholder="you@example.com"
                     className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
@@ -79,14 +97,20 @@ const Login = () => {
                     value={password}
                     onChange={(event) => setPassword(event.target.value)}
                     type="password"
+                    required
+                    minLength={6}
                     placeholder="••••••••"
                     className="w-full pl-12 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500"
                   />
                 </div>
               </div>
 
-              <button type="submit" className="w-full py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-black transition">
-                Sign In
+              <button
+                type="submit"
+                disabled={submitting}
+                className="w-full py-3 rounded-xl bg-gray-900 text-white font-semibold hover:bg-black transition disabled:cursor-not-allowed disabled:opacity-60"
+              >
+                {submitting ? "Signing in..." : "Sign In"}
               </button>
             </form>
 

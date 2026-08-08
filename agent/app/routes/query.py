@@ -1,4 +1,4 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 
 from app.config import settings
 from app.models.schema import AgenticQueryResponse, QueryRequest
@@ -9,21 +9,25 @@ from app.services.gpt_service import generate_rag_answer
 router = APIRouter()
 
 
+def _build_query_kwargs(data: QueryRequest) -> dict:
+    kwargs = {
+        "query_embeddings": [encode(data.query)],
+        "n_results": settings.query_n_results,
+    }
+    if data.service:
+        kwargs["where"] = {"service": data.service}
+    return kwargs
+
+
 @router.post("/query")
 async def query_logs(data: QueryRequest):
-    results = collection.query(
-        query_embeddings=[encode(data.query)],
-        n_results=settings.query_n_results,
-    )
+    results = collection.query(**_build_query_kwargs(data))
     return results
 
 
 @router.post("/query/agentic", response_model=AgenticQueryResponse)
 async def query_logs_agentic(data: QueryRequest):
-    results = collection.query(
-        query_embeddings=[encode(data.query)],
-        n_results=settings.query_n_results,
-    )
+    results = collection.query(**_build_query_kwargs(data))
 
     documents = results.get("documents", [])
     contexts = documents[0] if documents else []
@@ -31,7 +35,7 @@ async def query_logs_agentic(data: QueryRequest):
     if not contexts:
         return AgenticQueryResponse(
             query=data.query,
-            answer="No relevant context found in the vector database.",
+            answer="No relevant context found in the vector database for the selected service.",
             contexts=[],
         )
 

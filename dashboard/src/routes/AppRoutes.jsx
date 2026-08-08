@@ -8,10 +8,19 @@ import Contact from "../components/Contact/Contact.jsx";
 import User from "../components/User/User.jsx";
 import Login from "../pages/Login.jsx";
 import Register from "../pages/Register.jsx";
+import LogsDashboard from "../components/LogsDashboard/LogsDashboard.jsx";
 
 const RequireAuth = () => {
   const auth = useAuth();
   const location = useLocation();
+
+  if (auth.loading) {
+    return (
+      <div className="min-h-[40vh] flex items-center justify-center text-gray-500">
+        Checking session...
+      </div>
+    );
+  }
 
   if (!auth.isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
@@ -27,6 +36,7 @@ const router = createBrowserRouter(
       <Route path="login" element={<Login />} />
       <Route path="register" element={<Register />} />
       <Route element={<RequireAuth />}>
+        <Route path="dashboard" element={<LogsDashboard />} />
         <Route path="about" element={<About />} />
         <Route path="contact" element={<Contact />} />
         <Route path="user/:userid" element={<User />} />
