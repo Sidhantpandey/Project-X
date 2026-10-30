@@ -18,13 +18,13 @@ const getStoredUser = () => {
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(getStoredUser);
   const [token, setToken] = useState(() => localStorage.getItem("token"));
-  const [loading, setLoading] = useState(!!localStorage.getItem("token"));
+  const [loading, setLoading] = useState(true);
 
-  const persistSession = (nextToken, nextUser) => {
-    localStorage.setItem("token", nextToken);
-    localStorage.setItem("user", JSON.stringify(nextUser));
-    setToken(nextToken);
-    setUser(nextUser);
+  const persistSession = (nextUser) => {
+    if (nextUser) {
+      localStorage.setItem("user", JSON.stringify(nextUser));
+      setUser(nextUser);
+    }
   };
 
   const clearSession = () => {
@@ -36,53 +36,64 @@ export const AuthProvider = ({ children }) => {
   };
 
   useEffect(() => {
-    if (!token) {
+    let cancelled = false;
+
+    const hydrateSession = async () => {
+      try {
+        const response = await authApi.get("/auth/me");
+        if (cancelled) return;
+
+        const nextUser = response.data?.data?.user;
+        if (nextUser) {
+          persistSession(nextUser);
+        } else {
+          clearSession();
+        }
+      } catch {
+        if (!cancelled) clearSession();
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    const storedUser = getStoredUser();
+    if (storedUser) {
+      setUser(storedUser);
       setLoading(false);
       return;
     }
 
-    let cancelled = false;
-
-    authApi
-      .get("/auth/me", {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((response) => {
-        if (cancelled) return;
-        const nextUser = response.data?.data?.user;
-        if (nextUser) {
-          setUser(nextUser);
-          localStorage.setItem("user", JSON.stringify(nextUser));
-        }
-      })
-      .catch(() => {
-        if (!cancelled) clearSession();
-      })
-      .finally(() => {
-        if (!cancelled) setLoading(false);
-      });
+    hydrateSession();
 
     return () => {
       cancelled = true;
     };
-  }, [token]);
+  }, []);
 
   const login = async (email, password) => {
     const response = await authApi.post("/auth/login", { email, password });
-    const { token: nextToken, user: nextUser } = response.data.data;
-    persistSession(nextToken, nextUser);
+    const nextUser = response.data?.data?.user ?? response.data?.user;
+    persistSession(nextUser);
+    setToken("session");
     return nextUser;
   };
 
   const register = async (name, email, password) => {
     const response = await authApi.post("/auth/register", { name, email, password });
-    const { token: nextToken, user: nextUser } = response.data.data;
-    persistSession(nextToken, nextUser);
+    const nextUser = response.data?.data?.user ?? response.data?.user;
+    persistSession(nextUser);
+    setToken("session");
     return nextUser;
   };
 
-  const logout = () => {
-    clearSession();
+  const logout = async () => {
+    try {
+      await authApi.post("/auth/logout");
+    } catch {
+      // Ignore logout errors and clear local state anyway.
+    } finally {
+      clearSession();
+    }
   };
 
   return (
@@ -90,7 +101,7 @@ export const AuthProvider = ({ children }) => {
       value={{
         user,
         token,
-        isAuthenticated: !!token,
+        isAuthenticated: !!user,
         loading,
         login,
         register,

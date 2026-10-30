@@ -29,12 +29,32 @@ const RequireAuth = () => {
   return <Outlet />;
 };
 
+const PublicOnly = () => {
+  const auth = useAuth();
+
+  if (auth.loading) {
+    return (
+      <div className="min-h-[40vh] flex items-center justify-center text-gray-500">
+        Checking session...
+      </div>
+    );
+  }
+
+  if (auth.isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return <Outlet />;
+};
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<Layout />}>
       <Route index element={<Home />} />
-      <Route path="login" element={<Login />} />
-      <Route path="register" element={<Register />} />
+      <Route element={<PublicOnly />}>
+        <Route path="login" element={<Login />} />
+        <Route path="register" element={<Register />} />
+      </Route>
       <Route element={<RequireAuth />}>
         <Route path="dashboard" element={<LogsDashboard />} />
         <Route path="about" element={<About />} />
