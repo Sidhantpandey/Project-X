@@ -1,11 +1,11 @@
-# Project42AR
+# Project X
 
-Project42AR is an AI-powered application consisting of multiple services for data ingestion, agent workflows, and dashboard management.
+Project X is an AI-powered application consisting of multiple services for data ingestion, agent workflows, and dashboard management.
 
 ## Project Structure
 
 ```bash
-Project42AR/
+Project X/
 │
 ├── agent/       # AI agent logic and workflows
 ├── dashboard/   # Frontend dashboard application
